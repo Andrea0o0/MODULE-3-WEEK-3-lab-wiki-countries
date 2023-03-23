@@ -1,23 +1,39 @@
-import logo from './logo.svg';
+import React, {useState,useEffect} from 'react';
 import './App.css';
+import {Route,Routes} from 'react-router-dom'
+import Navbar from './components/Navbar';
+import Home from './views/Home';
+import ErrorPage from './views/ErrorPage';
+import CountryDetails from './components/CountryDetails';
+import countryService from './services/countriesService';
 
 function App() {
+      // eslint-disable-next-line
+      const [countries,setCountries] = useState('')
+
+      const getCountries = async () => {
+          try {
+              const response = await countryService.getCountries()
+              setCountries(response)
+          } catch (error) {  
+              console.log(error)
+          }
+      }
+  
+      useEffect(() => {
+          getCountries()
+      },[])
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar/>
+      <Routes>
+        <Route path='/' element={countries.length>0 ? <Home countriesprop={countries}/>: <p>Loading...</p>}>
+          <Route path=":countryId" element={countries.length>0 ? <CountryDetails countries={countries}/>: <p>Loading...</p>}/>
+        </Route>
+        <Route path="*" element={<ErrorPage/>} />
+      </Routes>
     </div>
   );
 }

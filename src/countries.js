@@ -1,4 +1,4 @@
-[
+const countries = [
   {
     "name": {
       "common": "Aruba",
